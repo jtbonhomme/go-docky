@@ -2,21 +2,48 @@ package main
 
 import (
 	"log"
+	"os"
 	"os/exec"
 	"runtime"
 
 	"github.com/progrium/macdriver/cocoa"
 	"github.com/progrium/macdriver/objc"
+
+	"github.com/sevlyar/go-daemon"
 )
 
 func main() {
+	home := os.Getenv("HOME")
+	cntxt := &daemon.Context{
+		PidFileName: home+"/docky.pid",
+		PidFilePerm: 0644,
+		LogFileName: home+"/docky.log",
+		LogFilePerm: 0640,
+		WorkDir:     home,
+		Umask:       027,
+		Args:        []string{"[go-daemon docky]"},
+	}
+
+	d, err := cntxt.Reborn()
+	if err != nil {
+		log.Fatal("Unable to run: ", err)
+	}
+	if d != nil {
+		return
+	}
+	defer cntxt.Release()
+
+	log.Print("- - - - - - - - - - - - - - -")
+	log.Print("daemon started")
+
+
 	runtime.LockOSThread()
 
 	cocoa.TerminateAfterWindowsClose = false
 	app := cocoa.NSApp_WithDidLaunch(func(n objc.Object) {
 		obj := cocoa.NSStatusBar_System().StatusItemWithLength(cocoa.NSVariableStatusItemLength)
 		obj.Retain()
-		obj.Button().SetTitle("Docky")
+		obj.Button().SetTitle("docky")
 
 		moveClicked := make(chan bool)
 		go func() {
