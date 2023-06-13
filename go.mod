@@ -1,4 +1,4 @@
-module github.com/jtbonhomme/go-dock
+module github.com/jtbonhomme/go-docky
 
 go 1.19
 
