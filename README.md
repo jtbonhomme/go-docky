@@ -9,7 +9,7 @@ Utility to restore Dock position on the laptop main screen for MacOS in Golang.
 This command install go-docky locally (in `$GOPATH/bin`)
 
 ```sh
-go install github.com/jtbonhomme/go-docky
+go install github.com/jtbonhomme/go-docky@latest
 ```
 
 ## Execute
